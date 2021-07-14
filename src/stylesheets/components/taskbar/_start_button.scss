@@ -1,0 +1,31 @@
+@import '../../theme/color';
+@import '../../util/image';
+
+#start-button {
+  background-image: icon(taskbar, start-button);
+  background-repeat: no-repeat;
+  background-position: 3px 2px;
+
+  padding-left: 22px;
+  padding-right: 3px;
+
+  @include shell-border-inactive;
+
+  display: flex;
+  align-items: center;
+
+  position: relative;
+
+  &::after {
+    content: 'Start';
+    font-weight: bold;
+    font-size: 10px;
+    -webkit-font-smoothing: none;
+  }
+
+  &.active {
+    @include shell-border-active;
+  }
+
+  @import 'start_menu';
+}

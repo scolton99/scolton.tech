@@ -1,0 +1,42 @@
+@import '../theme/color';
+@import '../util/image';
+
+#taskbar {
+  background-color: $shell-background;
+  border-top: $shell-border;
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  padding: 2px;
+
+  display: flex;
+  z-index: 10001;
+
+  > * {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  > :not(#open-windows) {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  @import "taskbar/start_button";
+
+  #quick-launch {
+
+  }
+
+  #open-windows {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
+  #system-tray {
+
+  }
+}

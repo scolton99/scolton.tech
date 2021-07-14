@@ -1,0 +1,57 @@
+@import '../../theme/color';
+
+#start-menu {
+  position: absolute;
+  height: 0;
+  bottom: 100%;
+  left: 0;
+  width: 211px;
+  background-color: $shell-background;
+  overflow: hidden;
+
+  &.active {
+    @include shell-border-inactive;
+  }
+
+  > #start-menu-inner {
+    padding-left: 22px;
+    position: relative;
+    margin: 1px;
+
+    background: linear-gradient(90deg, $shell-dark-blue 0px, $shell-dark-blue 22px, transparent 22px);
+
+    &::before {
+      content: 'Windows98';
+      transform: rotate(-90deg);
+      font-weight: bold;
+      position: absolute;
+      transform-origin: 0 0;
+      bottom: 0;
+      left: 1px;
+      color: $shell-accent;
+    }
+  }
+
+  hr {
+    margin: 3px 2px;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 0;
+
+    > li {
+      list-style-type: none;
+      height: 32px;
+      line-height: 32px;
+      padding-left: 43px;
+      background-repeat: no-repeat;
+
+      &:hover {
+        background-color: $shell-dark-blue;
+        color: $shell-accent;
+        font-family: 'mssansserif', sans-serif;
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+@import '../../theme/color';
+
+.titlebar {
+  background-color: $shell-dark-blue;
+  height: 18px;
+  padding-left: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1px;
+
+  &.no-icon {
+    padding-left: 0;
+  }
+
+  span.title {
+    color: $shell-accent;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 18px;
+    padding-left: 2px;
+  }
+
+  &.close-only .max-rest,
+  &.close-only .min {
+    display: none;
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    padding-right: 2px;
+
+    > * {
+      background-color: $shell-background;
+      height: 14px;
+      width: 16px;
+      box-sizing: border-box;
+
+      @include shell-border-inactive;
+    }
+
+    > .close {
+      margin-left: 2px;
+
+      &::before {
+        content: '\2A2F';
+        font-size: 18px;
+        position: relative;
+        bottom: 6px;
+        font-weight: bold;
+      }
+    }
+  }
+}

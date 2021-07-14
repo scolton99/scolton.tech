@@ -1,0 +1,15 @@
+@import '../theme/color';
+
+.window {
+  position: fixed;
+  padding: 1px;
+  background-color: $shell-background;
+
+  @include shell-border-inactive;
+
+  @import 'window/titlebar';
+
+  > .window-content {
+
+  }
+}

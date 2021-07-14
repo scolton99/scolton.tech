@@ -1,0 +1,9 @@
+@import '../util/image';
+
+$icons: 'wupdate' 'programs' 'favorites' 'documents' 'settings' 'find' 'help' 'run' 'logoff' 'poweroptions';
+
+@each $icon in $icons {
+  .icon-#{$icon} {
+    background-image: icon('taskbar/start-menu', $icon);
+  }
+}

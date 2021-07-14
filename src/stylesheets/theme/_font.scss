@@ -1,0 +1,8 @@
+@function font($name) {
+  @return url('/static/assets/fonts/#{$name}.woff2');
+}
+
+@font-face {
+  font-family: 'mssansserif';
+  src: font('mssansserif') format('woff2');
+}

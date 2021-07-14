@@ -1,0 +1,51 @@
+$shell-background:  rgb(192, 192, 192);
+$shell-accent:      rgb(252, 252, 252);
+$shell-dark-blue:   rgb(0, 0, 128);
+
+$shell-border:     2px groove $shell-accent;
+
+$default-desktop-background-color: rgb(0, 128, 128);
+
+@mixin shell-border-inactive {
+  border-top: 1px solid $shell-accent;
+  border-left: 1px solid $shell-accent;
+  border-bottom: 2px ridge rgb(128, 128, 128);
+  border-right: 2px ridge rgb(128, 128, 128);
+}
+
+.border-inactive {
+  @include shell-border-inactive;
+}
+
+@mixin shell-border-primary {
+  border-top: 3px solid $shell-accent;
+  border-left: 3px solid $shell-accent;
+  border-bottom: 3px ridge rgb(128, 128, 128);
+  border-right: 3px ridge rgb(128, 128, 128);
+}
+
+.border-primary {
+  position: relative;
+
+  @include shell-border-primary;
+}
+
+.border-primary::after {
+  content: '';
+
+  position: absolute;
+  inset: -3px -3px -3px -3px;
+
+  border: 1px solid black;
+}
+
+@mixin shell-border-active {
+  border-top: 2px groove rgb(128, 128, 128);
+  border-left: 2px groove rgb(128, 128, 128);
+  border-right: 1px solid $shell-accent;
+  border-bottom: 1px solid $shell-accent;
+}
+
+.border-active {
+  @include shell-border-active;
+}

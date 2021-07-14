@@ -1,0 +1,16 @@
+@import 'theme/font';
+@import 'theme/color';
+
+@import 'components/window';
+@import 'components/taskbar';
+@import 'components/buttons';
+
+@import 'theme/icons';
+
+@import 'util/shade';
+
+body {
+  margin: 0;
+  background-color: $default-desktop-background-color;
+  font-family: 'mssansserif', sans-serif;
+}

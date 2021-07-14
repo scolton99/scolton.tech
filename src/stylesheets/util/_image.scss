@@ -1,0 +1,7 @@
+@function image($category, $name, $ext) {
+  @return url("/static/assets/images/#{$category}/#{$name}.#{$ext}");
+}
+
+@function icon($category, $name) {
+  @return image($category, $name, png);
+}

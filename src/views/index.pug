@@ -1,0 +1,13 @@
+extends layouts/_main
+
+block setup
+    - page_title = 'Windows 98'
+
+prepend content
+    #open-windows
+    #taskbar
+        #start-button(title='Click here to begin.')
+            #start-menu
+        #quick-launch
+        #taskbar-open-windows
+        #system-tray

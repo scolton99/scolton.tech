@@ -1,0 +1,38 @@
+@import '../theme/color';
+
+.button {
+  @include shell-border-inactive;
+
+  height: 20px;
+  box-sizing: border-box;
+
+  padding: 0;
+  margin-left: 1px;
+
+  background-color: $shell-background;
+}
+
+.button.border-primary {
+  margin-left: -1px;
+  margin-right: -1px;
+}
+
+.button.border-primary:active {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.button:active {
+  border: 2px solid rgb(128, 128, 128);
+  position: relative;
+  margin-left: 0;
+
+  &::after {
+    content: "";
+
+    inset: -2px -2px -2px -2px;
+    border: 1px solid black;
+
+    position: absolute;
+  }
+}
