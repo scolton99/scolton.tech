@@ -21,5 +21,17 @@ namespace Win98 {
         protected setupRootElement(): void {
             this.rootElement = document.createElement("div");
         }
+
+        public addCSSClass(className: string): void {
+            this.getRootDOMElement().classList.add(className);
+        }
+
+        public removeCSSClass(className: string): void {
+            this.getRootDOMElement().classList.remove(className);
+        }
+
+        public toggleCSSClass(className: string): void {
+            this.getRootDOMElement().classList.toggle(className);
+        }
     }
 }

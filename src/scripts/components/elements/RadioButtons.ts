@@ -115,8 +115,8 @@ namespace Win98 {
         }
 
         public setOrientation(orientation: RadioButtonsOrientation): void {
-            this.getRootDOMElement().classList.remove(this.orientation);
-            this.getRootDOMElement().classList.add(orientation);
+            this.removeCSSClass(this.orientation);
+            this.addCSSClass(orientation);
             this.orientation = orientation;
         }
     }

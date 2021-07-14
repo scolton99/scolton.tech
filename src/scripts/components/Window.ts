@@ -3,6 +3,7 @@
 /// <reference path="../actions/CloseWindowAction.ts" />
 /// <reference path="../util/HTMLCompatible.ts" />
 /// <reference path="./elements/UIElement.ts" />
+/// <reference path="../util/Resources.ts" />
 
 
 namespace Win98 {
@@ -31,7 +32,7 @@ namespace Win98 {
 
             const iconName = this.getIconName();
             if (iconName !== null) {
-                titlebar.style.backgroundImage = `url('/static/assets/images/window-icons/${this.getIconName()}.png')`;
+                titlebar.style.backgroundImage = Resources.getCSSCategoricalImage('window-icons', this.getIconName());
             } else {
                 titlebar.classList.add("no-icon");
             }
@@ -107,7 +108,17 @@ namespace Win98 {
             return true;
         };
 
-        protected registerContent(content: HTMLElement) {
+        // @ts-ignore
+        protected registerContent(content: UIElement) {
+            this.registerHTMLContent(content.getRootDOMElement());
+        }
+
+        /**
+         * @deprecated
+         * @param content
+         * @protected
+         */
+        protected registerHTMLContent(content: HTMLElement) {
             this.contentElement = content;
             this.contentElement.classList.add(Window.CONTENT_CLASS);
 

@@ -1,6 +1,7 @@
 /// <reference path="./StartButton.ts" />
 /// <reference path="../../actions/Action.ts" />
 /// <reference path="./MenuEntry.ts" />
+/// <reference path="../../util/Resources.ts" />
 
 namespace Win98 {
     enum AnimationDirection {
@@ -42,7 +43,7 @@ namespace Win98 {
 
         private renderEntry(entry: MenuEntry): HTMLElement {
             const item = document.createElement("li");
-            item.style.backgroundImage = `url('/static/assets/images/taskbar/start-menu/${entry.getIconName()}.png')`;
+            item.style.backgroundImage = Resources.getCSSCategoricalImage('start-menu', entry.getIconName());
             item.textContent = entry.getTitle();
             if (entry.getAction() !== null) {
                 item.addEventListener("click", () => {
