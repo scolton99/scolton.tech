@@ -84,7 +84,7 @@ namespace Win98 {
             }
             window.addEventListener("mousemove", handleMove);
 
-            const removeListeners: (MouseEvent) => void = (event: MouseEvent) => {
+            const removeListeners: (MouseEvent) => void = () => {
                 window.removeEventListener("mousemove", handleMove);
                 window.removeEventListener("mouseup", removeListeners);
             }
