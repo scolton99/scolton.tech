@@ -1,3 +1,7 @@
 node_modules/
 dist/*
 !dist/.gitkeep
+public/assets/scripts/*
+!public/assets/scripts/.gitkeep
+public/assets/stylesheets/*
+!public/assets/stylesheets/.gitkeep
