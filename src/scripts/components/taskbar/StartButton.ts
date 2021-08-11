@@ -8,7 +8,7 @@ namespace Win98 {
         constructor() {
             super();
 
-            this.menu = new StartMenu();
+            this.menu = new StartMenu(this);
         }
 
         getId() {
@@ -35,8 +35,12 @@ namespace Win98 {
                 return;
             }
 
-            this.el.classList.remove("active");
+            this.unclick();
             this.menu.close();
+        }
+
+        unclick() {
+            this.el.classList.remove("active");
         }
 
         isClicked() {

@@ -9,7 +9,9 @@
 
   @import 'window/titlebar';
 
-  > .window-content {
+  @import 'util/flex';
+  @import 'util/metrics';
 
+  > .window-content {
   }
 }

@@ -1,0 +1,16 @@
+.button-set {
+  display: flex;
+  justify-content: space-between;
+
+  &.equal-size {
+    > .button {
+      flex: 1 1 0;
+    }
+
+    @for $i from 1 to 5 {
+      &.gap-#{$i} {
+        gap: $i * 2px;
+      }
+    }
+  }
+}

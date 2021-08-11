@@ -1,0 +1,19 @@
+.flex {
+  display: flex;
+}
+
+.fixed-size {
+  flex: 0 0 0;
+}
+
+.grow {
+  flex: 1;
+}
+
+.no-grow {
+  flex: 0 0 0;
+}
+
+.no-shrink {
+  flex-shrink: 0;
+}

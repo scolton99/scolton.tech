@@ -1,64 +1,52 @@
 /// <reference path="../../actions/RestartAction.ts" />
 /// <reference path="../../actions/ShutdownAction.ts" />
+/// <reference path="../../actions/StandbyAction.ts" />
+/// <reference path="../../util/SessionManager.ts" />
 /// <reference path="../elements/RadioButtons.ts" />
+/// <reference path="../ShadeWindow.ts" />
 
 namespace Win98 {
-    export class ShutdownWindow extends Window {
-        private shade: HTMLElement;
+    export class ShutdownWindow extends ShadeWindow {
+        private static readonly LAST_SELECTION_KEY = 'shutdown-window-default-selection';
         private readonly radioButtons: RadioButtons;
 
         private static readonly actions: Array<RadioButton> = [
-            { name: "Shut Down" },
-            { name: "Restart" }
+            { name: "Stand by", value: 'stand-by', action: new StandbyAction() },
+            { name: "Shut down", value: 'shut-down', action: new ShutdownAction() },
+            { name: "Restart", value: 'restart', action: new RestartAction() }
         ];
-
-        private PowerOptionsAction = class implements Action {
-            private readonly outer: ShutdownWindow;
-
-            constructor(outer: ShutdownWindow) {
-                this.outer = outer;
-            }
-
-            public run(): void {
-                const selected = this.outer.radioButtons.getValue();
-
-                console.log(selected);
-
-                if (!selected)
-                    return;
-
-                switch (selected) {
-                    case "shut-down": {
-                        new ShutdownAction().run();
-                        break;
-                    }
-                    case "restart": {
-                        new RestartAction().run();
-                    }
-                }
-            }
-        }
 
         public constructor() {
             super("Shut Down Windows", CloseButtons.CLOSE_ONLY)
 
-            const content = new Pane();
-            const leftContent = new Pane();
+            const content = new Pane('flex', 'padding-top-10', 'padding-horiz-6');
+            const leftContent = new Pane('fixed-size', 'padding-right-8');
             const rightContent = new Pane();
 
             leftContent.append(new Icon('shutdown'));
 
-            rightContent.append(new Label('What do you want the computer to do?'));
-            this.radioButtons = new RadioButtons(ShutdownWindow.actions);
+            rightContent.append(new Label('What do you want the computer to do?', 'margin-bottom-8'));
+
+            ShutdownWindow.actions.forEach(action => {
+                const last = SessionManager.get(ShutdownWindow.LAST_SELECTION_KEY, "shut-down");
+
+                action.default = last === action.value;
+            });
+
+            this.radioButtons = new RadioButtons(ShutdownWindow.actions, RadioButtonsOrientation.VERTICAL, ['margin-bottom-2'], 'margin-bottom-8');
             rightContent.append(this.radioButtons);
 
+            this.radioButtons.addChangeListener(newValue => {
+                SessionManager.set(ShutdownWindow.LAST_SELECTION_KEY, newValue);
+            });
+
             const buttons = [
-                new Button('OK', new this.PowerOptionsAction(this)),
+                new Button('OK', new CompoundAction(new CloseWindowAction(this), this.radioButtons.action())),
                 new Button('Cancel', new CloseWindowAction(this)),
-                new Button('Help', null)
+                new Button('Help')
             ];
 
-            rightContent.append(new ButtonSet(buttons));
+            rightContent.append(new ButtonSet(buttons, [], 'equal-size', 'gap-3', 'margin-bottom-8'));
 
             content.append(leftContent);
             content.append(rightContent);
@@ -66,26 +54,26 @@ namespace Win98 {
             this.registerContent(content);
         }
 
-        private showScreenShade() {
-            this.shade = document.createElement("div");
-            this.shade.classList.add("shade");
+        /**
+         * @override
+         * @param oldSize
+         * @param newSize
+         */
+        resizeDesktop(oldSize: Win98.WindowSize, newSize: Win98.WindowSize) {
+            super.resizeDesktop(oldSize, newSize);
 
-            document.body.appendChild(this.shade);
-            this.getWindowElement().style.zIndex = '20000';
-        }
-
-        private removeScreenShade() {
-            document.body.removeChild(this.shade);
+            this.fitContent();
+            this.center();
         }
 
         onDisplay() {
             this.center();
-            this.showScreenShade();
+            this.showShade();
             this.fitContent();
         }
 
         onClose() {
-            this.removeScreenShade();
+            this.hideShade();
         }
 
         getIconName(): string {

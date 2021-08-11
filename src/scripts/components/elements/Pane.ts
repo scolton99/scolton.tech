@@ -2,12 +2,10 @@
 
 namespace Win98 {
     export class Pane extends UIElement {
-        public constructor(className?: string) {
+        public constructor(...classes: Array<string>) {
             super();
 
-            if (className) {
-                this.getRootDOMElement().classList.add(className);
-            }
+            this.rootElement.classList.add(...classes);
         }
     }
 }

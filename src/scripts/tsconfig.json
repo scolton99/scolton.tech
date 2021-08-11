@@ -3,7 +3,10 @@
     "target": "es2015",
     "sourceMap": true,
     "outFile": "../../public/assets/scripts/application.js",
-    "sourceRoot": "file://C:\\Users\\scolton\\Code\\scolton.tech\\src\\scripts"
+    "sourceRoot": "file://C:\\Users\\scolton\\Code\\scolton.tech\\src\\scripts",
+    "lib": [
+      "dom"
+    ]
   },
   "exclude": [
     "node_modules"

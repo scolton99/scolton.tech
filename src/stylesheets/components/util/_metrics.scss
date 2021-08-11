@@ -1,0 +1,25 @@
+$padding-multiplier: 2px;
+
+@for $i from 1 through 24 {
+  @each $metric in ['padding', 'margin'] {
+    .#{$metric}-#{$i} {
+      #{$metric}: $i * $padding-multiplier;
+    }
+
+    .#{$metric}-horiz-#{$i} {
+      #{$metric}-left: $i * $padding-multiplier;
+      #{$metric}-right: $i * $padding-multiplier;
+    }
+
+    .#{$metric}-vert-#{$i} {
+      #{$metric}-top: $i * $padding-multiplier;
+      #{$metric}-bottom: $i * $padding-multiplier;
+    }
+
+    @each $dir in ['top', 'bottom', 'left', 'right'] {
+      .#{$metric}-#{$dir}-#{$i} {
+        #{$metric}-#{$dir}: $i * $padding-multiplier;
+      }
+    }
+  }
+}

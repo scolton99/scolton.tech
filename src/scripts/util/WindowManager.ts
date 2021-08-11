@@ -1,10 +1,17 @@
 /// <reference path="../components/Window.ts" />
 
 namespace Win98 {
+    export interface WindowSize {
+        height: number,
+        width: number
+    }
+
     export class WindowManager {
         private static readonly MAX_Z_INDEX: number = 10_000;
         private static readonly WINDOWS_CONTAINER_ID = "open-windows";
         private readonly el: HTMLElement;
+
+        private lastWindowSize: WindowSize;
 
         private openWindows: Array<Window> = [];
         private callbacks: Array<Function> = [];
@@ -16,6 +23,13 @@ namespace Win98 {
         public constructor() {
             this.el = document.getElementById(WindowManager.WINDOWS_CONTAINER_ID);
 
+            this.lastWindowSize = {
+                height: window.innerHeight,
+                width: window.innerWidth
+            };
+
+            window.addEventListener('resize', this.resizeDesktop.bind(this));
+
             if (!this.el)
                 throw new Error(`Couldn't find element #${WindowManager.WINDOWS_CONTAINER_ID} to hold open windows`);
         }
@@ -24,11 +38,15 @@ namespace Win98 {
             this.callbacks.forEach(it => it.call(null, this.openWindows));
         }
 
+        public shutdown() {
+            this.openWindows.forEach(this.close.bind(this));
+        }
+
         public open(window: Window) {
             this.openWindows.unshift(window);
             console.log(`Open windows: ${this.openWindows}`)
 
-            this.el.appendChild(window.getWindowElement());
+            this.el.appendChild(window.getSurroundingWindowElement());
             window.onDisplay();
 
             this.refresh();
@@ -40,7 +58,7 @@ namespace Win98 {
                 return;
 
             this.openWindows.splice(this.openWindows.indexOf(window), 1);
-            window.getWindowElement().parentElement.removeChild(window.getWindowElement());
+            this.el.removeChild(window.getSurroundingWindowElement());
             window.onClose();
 
             this.refresh();
@@ -66,14 +84,22 @@ namespace Win98 {
 
             for (let i = WindowManager.MAX_Z_INDEX; WindowManager.MAX_Z_INDEX - i < this.openWindows.length; --i) {
                 const idx = WindowManager.MAX_Z_INDEX - i;
+                const currentWindow = this.openWindows[idx];
 
-                if (this.openWindows[idx].showingAbove())
-                    continue;
-
-                this.openWindows[idx].getWindowElement().style.zIndex = `${i}`;
-                if (i !== WindowManager.MAX_Z_INDEX)
-                    this.openWindows[idx].blur();
+                if (currentWindow.showingAbove()) {
+                    currentWindow.setZIndex(WindowManager.MAX_Z_INDEX * 2);
+                } else {
+                    currentWindow.setZIndex(i);
+                    if (i !== WindowManager.MAX_Z_INDEX)
+                        currentWindow.blur();
+                }
             }
+        }
+
+        resizeDesktop() {
+            const newSize = { width: window.innerWidth, height: window.innerHeight };
+            this.openWindows.forEach(it => it.resizeDesktop(this.lastWindowSize, newSize));
+            this.lastWindowSize = newSize;
         }
     }
 }

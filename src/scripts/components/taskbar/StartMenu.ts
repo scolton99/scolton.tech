@@ -11,6 +11,7 @@ namespace Win98 {
 
     export class StartMenu extends DOMComponent {
         private readonly ANIMATION_TIME: number = 125;
+        private readonly startButton: StartButton;
 
         private menuEntries: Array<Array<MenuEntry>> = [
             [
@@ -31,8 +32,10 @@ namespace Win98 {
             ]
         ];
 
-        public constructor() {
+        public constructor(button: StartButton) {
             super();
+
+            this.startButton = button;
 
             const inner = document.createElement("div");
             inner.id = "start-menu-inner";
@@ -86,7 +89,6 @@ namespace Win98 {
         }
 
         private animateHeight(direction: AnimationDirection, callback: () => void = () => {}) {
-            const startHeight: number = parseFloat(window.getComputedStyle(this.el).height.replace(/[^0-9.]/, ""));
             const finalHeight: number = direction == AnimationDirection.OPEN ? this.calculateHeight() : 0;
             const startTime = performance.now();
 
@@ -100,9 +102,7 @@ namespace Win98 {
                 }
 
                 const pct = (delta / this.ANIMATION_TIME);
-                const factor = direction == AnimationDirection.OPEN ? pct : 1 - pct;
-                const ht = direction == AnimationDirection.OPEN ? finalHeight : startHeight;
-                this.el.style.height = `${factor * ht}px`;
+                this.el.style.height = `${pct * finalHeight}px`;
 
                 window.requestAnimationFrame(calculator);
             };
@@ -123,9 +123,10 @@ namespace Win98 {
             if (!this.el.classList.contains("active"))
                 return;
 
-            this.animateHeight(AnimationDirection.CLOSE, () => {
-                this.el.classList.remove("active");
-            });
+            this.el.style.height = "0";
+            this.el.classList.remove("active");
+
+            this.startButton.unclick();
         }
 
         public toggle() {

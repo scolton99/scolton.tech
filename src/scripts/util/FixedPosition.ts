@@ -13,19 +13,19 @@ namespace Win98 {
         }
 
         public getLeft(): string {
-            return `${this.left}px`;
+            return this.left ? `${this.left}px` : "unset";
         }
 
         public getRight(): string {
-            return `${this.right}px`;
+            return this.right ? `${this.right}px` : "unset";
         }
 
         public getTop(): string {
-            return `${this.top}px`;
+            return this.top ? `${this.top}px` : "unset";
         }
 
         public getBottom(): string {
-            return `${this.bottom}px`;
+            return this.bottom ? `${this.bottom}px` : "unset";
         }
     }
 }

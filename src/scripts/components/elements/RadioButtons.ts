@@ -5,10 +5,12 @@
 namespace Win98 {
     export interface RadioButton {
         name: string,
-        value?: string
+        value?: string,
+        action?: Action,
+        default?: boolean
     }
 
-    enum RadioButtonsOrientation {
+    export enum RadioButtonsOrientation {
         VERTICAL = "radio-buttons-vert",
         HORIZONTAL = "radio-buttons-horiz"
     }
@@ -20,8 +22,10 @@ namespace Win98 {
         private readonly items: Array<RadioButton>;
         private domElements: Map<RadioButton, HTMLInputElement> = new Map<RadioButton, HTMLInputElement>();
 
-        public constructor(items: Array<RadioButton>, orientation: RadioButtonsOrientation = RadioButtonsOrientation.VERTICAL) {
-            super();
+        private changeCallbacks: Array<{ (newValue: string): void }> = [];
+
+        public constructor(items: Array<RadioButton>, orientation: RadioButtonsOrientation = RadioButtonsOrientation.VERTICAL, itemClasses?: Array<string>, ...classes: Array<string>) {
+            super(...classes);
 
             this.name = UUID.generate();
             this.items = items.map(RadioButtons.assumeValue);
@@ -32,7 +36,7 @@ namespace Win98 {
                 const domElement: HTMLInputElement = this.makeItem(item);
 
                 this.domElements.set(item, domElement);
-                this.appendDOMElement(RadioButtons.addLabel(item, domElement));
+                this.appendDOMElement(RadioButtons.addLabel(item, domElement, ...itemClasses));
             });
         }
 
@@ -45,13 +49,13 @@ namespace Win98 {
             };
         }
 
-        private static addLabel(item: RadioButton, domItem: HTMLInputElement): HTMLElement {
+        private static addLabel(item: RadioButton, domItem: HTMLInputElement, ...classes: Array<string>): HTMLElement {
             const label = document.createElement("label");
             label.htmlFor = domItem.id;
             label.textContent = item.name;
 
             const container = document.createElement("div");
-            container.classList.add("radio-button-group");
+            container.classList.add("radio-button-group", ...classes);
             container.appendChild(domItem);
             container.appendChild(label);
 
@@ -64,6 +68,11 @@ namespace Win98 {
             domItem.name = this.name;
             domItem.value = item.value;
             domItem.id = UUID.generate();
+
+            if (item.default)
+                domItem.checked = true;
+
+            domItem.addEventListener('change', this.onChange.bind(this));
 
             return domItem;
         }
@@ -89,21 +98,16 @@ namespace Win98 {
             ArrayUtils.remove(this.items, item);
         }
 
-        // TODO: Don't like that this doesn't error upon no item with given name
-        public removeItemByName(name: string): void {
-            const item = this.items.find(item => item.name === name);
-            if (!item)
-                return;
+        private getSelectedItem(): RadioButton {
+            const set = Array.from(this.domElements.entries()).find(([_, el]) => el.checked);
 
-            this.removeItem(item);
+            return set && set instanceof Array ? set[0] : null;
         }
 
         public getValue(): string {
-            const selectedElement = Array.from(this.domElements.values()).find(it => it.checked);
-            if (!selectedElement)
-                return null;
+            const selectedItem = this.getSelectedItem();
 
-            return selectedElement.value;
+            return selectedItem ? selectedItem.value : null;
         }
 
         public setValue(value: string): void {
@@ -118,6 +122,35 @@ namespace Win98 {
             this.removeCSSClass(this.orientation);
             this.addCSSClass(orientation);
             this.orientation = orientation;
+        }
+
+        public action(): Action {
+            return new class implements Action {
+                private readonly outer: RadioButtons;
+
+                constructor(outer: RadioButtons) {
+                    this.outer = outer;
+                }
+
+                run(): void {
+                    const selected = this.outer.getSelectedItem();
+
+                    if (!selected)
+                        return;
+
+                    if (selected.action)
+                        selected.action.run();
+                }
+            }(this);
+        }
+
+        private onChange() {
+            const newValue = this.getValue();
+            this.changeCallbacks.forEach(callback => callback.call(null, newValue));
+        }
+
+        public addChangeListener(callback: { (newValue: string): void }) {
+            this.changeCallbacks.push(callback);
         }
     }
 }

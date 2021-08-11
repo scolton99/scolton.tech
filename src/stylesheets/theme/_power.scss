@@ -1,0 +1,29 @@
+@import '../util/shade';
+
+.dark-shade {
+  @extend .shade;
+
+  background-color: black;
+  z-index: 100000;
+}
+
+.safe-to-turn-off {
+  @extend .dark-shade;
+
+  color: #CF7129;
+  font-weight: bold;
+  font-size: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.boot-splash {
+  position: fixed;
+  inset: 0 0 0 0;
+  //noinspection CssUnknownTarget
+  background-image: url('/static/assets/images/boot.gif');
+  background-size: 100% 100%;
+  z-index: 100000;
+}

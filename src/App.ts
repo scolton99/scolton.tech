@@ -1,4 +1,5 @@
 import express from "express";
+import imagesRouter from "./routes/Images";
 
 const { PORT, DEV } = process.env;
 
@@ -10,6 +11,8 @@ app.set("views", "dist/views");
 app.get("/", (_req, res, _next) => {
     return res.render("index");
 });
+
+app.use('/images', imagesRouter);
 
 if (DEV)
     app.use('/static', express.static('public'));

@@ -1,13 +1,16 @@
+@import 'util/shade';
+
 @import 'theme/font';
 @import 'theme/color';
+@import 'theme/power';
 
 @import 'components/window';
 @import 'components/taskbar';
 @import 'components/buttons';
 
-@import 'theme/icons';
+@import 'components/elements';
 
-@import 'util/shade';
+@import 'theme/icons';
 
 body {
   margin: 0;

@@ -2,8 +2,9 @@ namespace Win98 {
     export abstract class UIElement implements HTMLCompatible {
         protected rootElement: HTMLElement;
 
-        protected constructor() {
+        protected constructor(...classes: Array<string>) {
             this.setupRootElement();
+            classes.forEach(this.addCSSClass.bind(this));
         }
 
         public append(child: UIElement) {
@@ -22,7 +23,7 @@ namespace Win98 {
             this.rootElement = document.createElement("div");
         }
 
-        public addCSSClass(className: string): void {
+        public addCSSClass(this: UIElement, className: string): void {
             this.getRootDOMElement().classList.add(className);
         }
 

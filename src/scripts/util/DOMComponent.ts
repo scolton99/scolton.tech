@@ -9,9 +9,13 @@ namespace Win98 {
                 throw new Error(`Couldn't find element #${this.getId()}`);
             }
 
-            this.el.addEventListener('click', this.click.bind(this));
+            this.el.addEventListener('click', event => {
+                if (event.target === this.el) {
+                    this.click(event);
+                }
+            });
             window.addEventListener('click', event => {
-                if (event.target != this.el) {
+                if (event.target !== this.el) {
                     this.clickOff(event);
                 }
             });

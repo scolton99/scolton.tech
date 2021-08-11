@@ -6,8 +6,8 @@ namespace Win98 {
     export class ServiceManager {
         private static instance: Windows;
 
-        static initialize(): void {
-            ServiceManager.instance = Windows.start();
+        static async initialize(): Promise<void> {
+            ServiceManager.instance = await Windows.start();
         }
 
         static getWindows(): Windows {

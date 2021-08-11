@@ -2,8 +2,8 @@
 
 namespace Win98 {
     export class Button extends UIElement {
-        public constructor(name: string, action?: Action, primary?: boolean) {
-            super();
+        public constructor(name: string, action?: Action, primary?: boolean, ...classes: Array<string>) {
+            super(...classes);
 
             this.addCSSClass("button");
             this.getRootDOMElement().textContent = name;

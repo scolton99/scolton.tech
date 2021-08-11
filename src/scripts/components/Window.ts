@@ -7,29 +7,76 @@
 
 
 namespace Win98 {
+    /**
+     * Types of window titlebar buttons that may exist.
+     */
     export enum CloseButtons {
         CLOSE_ONLY = "close-only",
         CLOSE_RESTORE_MAX_MIN = "close-restore-max-min"
     }
 
+    /**
+     * The base class for all windows on the system.
+     */
     export abstract class Window implements HTMLCompatible {
+        /**
+         * Constant for the CSS class name for window content.
+         * Cannot and should not be overridden.
+         *
+         * @private
+         */
         private static readonly CONTENT_CLASS = "window-content";
 
+        /**
+         * The title of the window. Displays on the titlebar.
+         *
+         * @protected
+         */
         protected readonly title: string;
+
+        /**
+         * DOM element containing the window's content. This does not include the titlebar.
+         * Contained by the `windowElement`.
+         *
+         * @protected
+         */
         protected contentElement: HTMLElement;
 
-        private readonly windowElement : HTMLElement;
+        /**
+         * DOM element surrounding the window for aspects of window rendering that take place outside the window.
+         *
+         * @protected
+         */
+        protected surroundingWindowElement: HTMLElement;
 
+        /**
+         * DOM element containing the titlebar, other aspects of the window itself, and the window's content.
+         *
+         * @private
+         */
+        protected windowElement: HTMLElement;
+
+        /**
+         * Creates a new window to be displayed. This constructor should be called by all implementing subclasses.
+         *
+         * @param title - The title of this window, for the titlebar.
+         * @param type - The type of buttons this window should have on the titlebar.
+         * @protected
+         */
         protected constructor(title: string, type: CloseButtons) {
             this.title = title;
 
+            // Create the outermost window DOM element
             this.windowElement = document.createElement("div");
+            this.surroundingWindowElement = this.windowElement;
             this.windowElement.classList.add("window");
 
+            // Create the titlebar
             const titlebar = document.createElement("div");
             titlebar.classList.add("titlebar");
             titlebar.classList.add(type);
 
+            // Load the icon
             const iconName = this.getIconName();
             if (iconName !== null) {
                 titlebar.style.backgroundImage = Resources.getCSSCategoricalImage('window-icons', this.getIconName());
@@ -37,6 +84,7 @@ namespace Win98 {
                 titlebar.classList.add("no-icon");
             }
 
+            // Container for close buttons
             const buttons = document.createElement("div");
             buttons.classList.add("buttons");
 
@@ -75,6 +123,11 @@ namespace Win98 {
             this.windowElement.append(placeholderContent);
         }
 
+        /**
+         * Handles the window being dragged by its titlebar.
+         *
+         * @param event - The `MouseEvent` resulting from the initial mouse down.
+         */
         public drag(event: MouseEvent): void {
             const origMousePos: MouseCoords = new MouseCoords(event.x, event.y);
             const origWindowPos: FixedPosition = this.getPosition();
@@ -82,13 +135,13 @@ namespace Win98 {
             const handleMove: (MouseEvent) => void = (event: MouseEvent) => {
                 const delta: { deltaX, deltaY } = origMousePos.calculateDelta(new MouseCoords(event.x, event.y));
                 this.shiftRelative(delta.deltaX, delta.deltaY, origWindowPos);
-            }
+            };
             window.addEventListener("mousemove", handleMove);
 
             const removeListeners: (MouseEvent) => void = () => {
                 window.removeEventListener("mousemove", handleMove);
                 window.removeEventListener("mouseup", removeListeners);
-            }
+            };
             window.addEventListener("mouseup", removeListeners);
         }
 
@@ -104,21 +157,36 @@ namespace Win98 {
             return this.contentElement;
         }
 
+        public getSurroundingWindowElement(): HTMLElement {
+            return this.surroundingWindowElement;
+        }
+
+        protected setSurroundingWindowElement(element: HTMLElement) {
+            while (element.firstElementChild)
+                element.removeChild(element.firstElementChild);
+
+            element.appendChild(this.windowElement);
+            this.surroundingWindowElement = element;
+        }
+
+        /**
+         * Determines whether this window should appear on the taskbar.
+         */
         public shouldAppearOnTaskbar(): boolean {
             return true;
         };
 
-        // @ts-ignore
         protected registerContent(content: UIElement) {
             this.registerHTMLContent(content.getRootDOMElement());
         }
 
         /**
-         * @deprecated
+         * Sets this window's content as a DOM element.
+         *
          * @param content
-         * @protected
+         * @private
          */
-        protected registerHTMLContent(content: HTMLElement) {
+        private registerHTMLContent(content: HTMLElement): void {
             this.contentElement = content;
             this.contentElement.classList.add(Window.CONTENT_CLASS);
 
@@ -129,22 +197,29 @@ namespace Win98 {
             this.windowElement.appendChild(this.contentElement);
         }
 
-        private static fromUnits(measure: string): number {
-            return parseFloat(measure.replace(/[^0-9.]/g, ""));
-        }
-
+        /**
+         * Computes the width of this window in pixels.
+         */
         public getWidth(): number {
             const pos = this.getPosition();
 
             return window.innerWidth - pos.right - pos.left;
         }
 
+        /**
+         * Computes the height of this window in pixels.
+         */
         public getHeight(): number {
             const pos = this.getPosition();
 
             return window.innerHeight - pos.top - pos.bottom;
         }
 
+        /**
+         * Centers this window vertically and horizontally on the screen.
+         *
+         * @param shouldIgnoreTaskbar - If the height of the taskbar should be taken into account in centering.
+         */
         public center(shouldIgnoreTaskbar: boolean = true): void {
             const width = this.getWidth();
             const height = this.getHeight();
@@ -154,21 +229,31 @@ namespace Win98 {
             const horiz = (window.innerWidth - width) / 2.0;
             const vert = (window.innerHeight - height) / 2.0;
 
-            this.setPosition(new FixedPosition(vert - (sigma / 2.0), horiz, vert + (sigma / 2.0), horiz));
+            this.setPosition(new FixedPosition(vert - (sigma / 2.0), horiz < 0 ? 2 * horiz : horiz, vert + (sigma / 2.0), horiz < 0 ? 0 : horiz));
         }
 
+        /**
+         * Returns this window's current position on screen in the form of a CSS inset.
+         */
         public getPosition(): FixedPosition {
             const computedStyles = getComputedStyle(this.windowElement);
 
             const distanceMetrics = ["top", "bottom", "left", "right"];
             const numericValues: { [index: string]: number } = {};
             distanceMetrics.forEach(it => {
-                numericValues[it] = Window.fromUnits(computedStyles[it]);
+                numericValues[it] = DOMUtils.fromUnits(computedStyles[it]);
             });
 
             return new FixedPosition(numericValues.top, numericValues.right, numericValues.bottom, numericValues.left);
         }
 
+        /**
+         * Shifts the window to a new position relative to a given starting position.
+         *
+         * @param deltaX - The horizontal shift given typical CSS axes.
+         * @param deltaY - The vertical shift given typical CSS axes.
+         * @param startingPosition - The starting position of the window.
+         */
         public shiftRelative(deltaX: number, deltaY: number, startingPosition: FixedPosition) {
             const newPosition = new FixedPosition(
                 startingPosition.top + deltaY,
@@ -180,20 +265,36 @@ namespace Win98 {
             this.setPosition(newPosition);
         }
 
+        /**
+         * Shift the window to a new position from its current position.
+         *
+         * @param deltaX - The horizontal shift given typical CSS axes.
+         * @param deltaY - The vertical shift given typical CSS axes.
+         */
         public shift(deltaX: number, deltaY: number): void {
             const starting: FixedPosition = this.getPosition();
             this.shiftRelative(deltaX, deltaY, starting);
         }
 
+        /**
+         * Set the window to a new position on screen (CSS inset format).
+         *
+         * @param position - The new position for the window.
+         */
         public setPosition(position: FixedPosition): void {
-            const el = this.windowElement;
+            const domElement: HTMLElement = this.windowElement;
 
-            el.style.top = position.getTop();
-            el.style.right = position.getRight();
-            el.style.bottom = position.getBottom();
-            el.style.left = position.getLeft();
+            domElement.style.top = position.getTop();
+            domElement.style.right = position.getRight();
+            domElement.style.bottom = position.getBottom();
+            domElement.style.left = position.getLeft();
         }
 
+        /**
+         * Set the window's height in pixels.
+         *
+         * @param height - The new height in pixels.
+         */
         public setHeight(height: number): void {
             const el = this.windowElement;
             const pos = this.getPosition();
@@ -201,6 +302,11 @@ namespace Win98 {
             el.style.bottom = `${window.innerHeight - (pos.top + height)}px`;
         }
 
+        /**
+         * Set the window's width in pixels.
+         *
+         * @param width - The new width in pixels.
+         */
         public setWidth(width: number): void {
             const el = this.windowElement;
             const pos = this.getPosition();
@@ -208,8 +314,16 @@ namespace Win98 {
             el.style.right = `${window.innerWidth - (pos.left + width)}px`;
         }
 
+        /**
+         * Set this window's height and width based on the size of its content.
+         *
+         * @protected
+         */
         protected fitContent() {
+            const position = this.getPosition();
+
             const el = this.getContentElement();
+            this.setPosition(new FixedPosition(position.top, null, null, position.left));
 
             const height = el.scrollHeight;
             const width = el.scrollWidth;
@@ -217,34 +331,130 @@ namespace Win98 {
             console.log(`Height: ${height}, width: ${width}`);
 
             this.setHeight(height + 23);
-            this.setWidth(width + 5);
+            this.setWidth(width + 6);
         }
 
+        /**
+         * Returns the name of the icon to appear on the titlebar.
+         */
         public abstract getIconName(): string;
+
+        /**
+         * Empty callback for when the window is rendered on the screen after instantiation.
+         */
         public onDisplay(): void { }
+
+        /**
+         * Empty callback for when the window is closed by the user or OS (to perform cleanup).
+         */
         public onClose(): void { }
+
+        /**
+         * If the window should currently be showing above all other windows.
+         */
         public showingAbove(): boolean {
             return false;
         }
 
+        /**
+         * If the window is resizeable by dragging the edges.
+         */
         public resizeable(): boolean {
             return true;
         }
 
+        /**
+         * If the window can be moved on screen by dragging it.
+         */
         public draggable(): boolean {
             return true;
         }
 
+        /**
+         * Adds styling to the window for when it becomes active.
+         */
         focus() {
             this.windowElement.classList.add("active");
         }
 
+        /**
+         * Adds styling to the window for when it becomes inactive.
+         */
         blur() {
             this.windowElement.classList.remove("active");
         }
 
+        /**
+         * Adds a new `UIElement` to this window's content.
+         *
+         * @param child - The new content to be appended after the existing content.
+         */
         public append(child: UIElement) {
             this.getContentElement().appendChild(child.getRootDOMElement());
+        }
+
+        /**
+         * Sets the z-Index of the window.
+         *
+         * @param zIndex - The new z-Index
+         */
+        public setZIndex(zIndex: number) {
+            this.getSurroundingWindowElement().style.zIndex = `${zIndex}`;
+        }
+
+        /**
+         * Gets the z-Index of the window.
+         */
+        public getZIndex(): number {
+            return parseInt(this.getSurroundingWindowElement().style.zIndex);
+        }
+
+        private getOldDimensions(oldDesktopSize: WindowSize): WindowSize {
+            const dims = this.getPosition();
+
+            const height = (oldDesktopSize.height - dims.bottom) - dims.top;
+            const width = (oldDesktopSize.width - dims.right) - dims.left;
+
+            return { width, height };
+        }
+
+        private keepOnScreen(): void {
+            const dims = this.getPosition();
+
+            let newTop = dims.top, newRight = dims.right, newLeft = dims.left, newBottom = dims.bottom;
+            const width = this.getWidth();
+            const height = this.getHeight();
+
+            if (newRight < 0) {
+                newRight = 0;
+                newLeft = window.innerWidth - width;
+            }
+
+            if (newLeft < 0) {
+                newLeft = 0;
+                newRight = window.innerWidth - width;
+            }
+
+            if (newBottom < 0) {
+                newBottom = 0;
+                newTop = window.innerHeight - height;
+            }
+
+            if (newTop < 0) {
+                newTop = 0;
+                newBottom = window.innerHeight - height;
+            }
+
+            this.setPosition(new FixedPosition(newTop, newRight, newBottom, newLeft));
+        }
+
+        public resizeDesktop(oldSize: WindowSize, newSize: WindowSize) {
+             const oldDims = this.getOldDimensions(oldSize);
+
+             this.setWidth(oldDims.width);
+             this.setHeight(oldDims.height);
+
+             this.keepOnScreen();
         }
     }
 }
