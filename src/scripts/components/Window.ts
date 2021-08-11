@@ -328,8 +328,6 @@ namespace Win98 {
             const height = el.scrollHeight;
             const width = el.scrollWidth;
 
-            console.log(`Height: ${height}, width: ${width}`);
-
             this.setHeight(height + 23);
             this.setWidth(width + 6);
         }

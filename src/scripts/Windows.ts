@@ -9,10 +9,13 @@ namespace Win98 {
         private readonly windowManager: WindowManager;
 
         private constructor() {
-            window.addEventListener("selectstart", event => {
+            const deny: { (Event): boolean } = event => {
                 event.preventDefault();
                 return false;
-            });
+            }
+
+            window.addEventListener("selectstart", deny);
+            window.addEventListener("contextmenu", deny);
 
             this.windowManager = new WindowManager();
             this.taskbar = new Taskbar(this.windowManager);

@@ -5,7 +5,7 @@
   "main": "src/App.ts",
   "scripts": {
     "prestart": "npm run build",
-    "build": "tsc && rm -rf dist/views && cp -R src/views dist/",
+    "build": "tsc && cd src/scripts && tsc && cd ../stylesheets && sass application.scss ../../public/assets/stylesheets/application.css && cd ../.. && rm -rf dist/views && cp -R src/views dist/",
     "start": "node dist/App.js"
   },
   "repository": {

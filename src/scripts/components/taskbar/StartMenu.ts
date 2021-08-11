@@ -27,7 +27,7 @@ namespace Win98 {
                 new MenuEntry("Run...", "run", null),
             ],
             [
-                new MenuEntry("Log Off User...", "logoff", null),
+                new MenuEntry("Log Off User...", "logoff", new NewWindowAction(LogOffWindow)),
                 new MenuEntry("Shut Down...", "poweroptions", new NewWindowAction(ShutdownWindow))
             ]
         ];

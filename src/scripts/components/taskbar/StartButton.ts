@@ -16,10 +16,8 @@ namespace Win98 {
         }
 
         click(event) {
-            if (event.target !== this.el) {
-                console.log("Clicked on a descendant of start button -- not triggering event");
+            if (event.target !== this.el)
                 return;
-            }
 
             this.el.classList.toggle("active");
 
@@ -30,10 +28,8 @@ namespace Win98 {
         }
 
         clickOff(event) {
-            if (this.el.contains(event.target)) {
-                console.log("Clicked on a descendant of start button -- not triggering event");
+            if (this.el.contains(event.target))
                 return;
-            }
 
             this.unclick();
             this.menu.close();
