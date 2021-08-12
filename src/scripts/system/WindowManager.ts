@@ -34,7 +34,7 @@ export default class WindowManager {
   }
 
   public refresh(): void {
-    this.callbacks.forEach(it => { it.call(null, this.openWindows); });
+    this.callbacks.forEach(it => void it.call(null, this.openWindows));
   }
 
   public shutdown(): void {

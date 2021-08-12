@@ -120,6 +120,6 @@ export default class RadioButtons extends UIElement {
 
   private onChange() {
     const newValue = this.getValue();
-    this.changeCallbacks.forEach(callback => { callback.call(null, newValue) });
+    this.changeCallbacks.forEach(callback => void callback.call(null, newValue));
   }
 }
