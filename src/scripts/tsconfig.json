@@ -7,6 +7,8 @@
       "dom"
     ],
     "module": "ES6",
-    "outDir": "../../public/assets/scripts"
-  }
+    "outDir": "../../public/assets/scripts",
+    "baseUrl": "../../node_modules",
+    "typeRoots": ["../../node_modules/@types"]
+  },
 }

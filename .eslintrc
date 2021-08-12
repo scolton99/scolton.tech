@@ -32,5 +32,5 @@
     "node": true
   },
   "root": true,
-  "ignorePatterns": ["dist/**/*"]
+  "ignorePatterns": ["dist/**/*", "public/assets/stylesheets/**/*", "public/assets/scripts/**/*"]
 }

@@ -4,10 +4,11 @@ import WindowManager from '../system/WindowManager.js';
 
 export default class ServiceManager {
   private static windowsInstance: Windows;
-  private static readonly sessionInstance: SessionService;
+  private static sessionInstance: SessionService;
 
   public static async initialize(): Promise<void> {
     ServiceManager.windowsInstance = await Windows.start();
+    ServiceManager.sessionInstance = new SessionService();
   }
 
   public static getWindows(): Windows {

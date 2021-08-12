@@ -1,7 +1,6 @@
 include ../shared/_util
 
 block setup
-    - page_title = "Please Give A Title"
 doctype html
 html
     head
@@ -10,4 +9,7 @@ html
         +style('application')
     body
         block content
+            script(type='module').
+                import { v4 as UUID_V4 } from 'https://jspm.dev/uuid';
+                window.UUIDV4 = UUID_V4;
             +script('App')

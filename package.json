@@ -7,7 +7,8 @@
   "scripts": {
     "prestart": "npm run build",
     "build": "tsc && cd src/scripts && tsc && cd ../stylesheets && sass application.scss ../../public/assets/stylesheets/application.css && cd ../.. && rm -rf dist/views && cp -R src/views dist/",
-    "start": "node dist/App.js"
+    "start": "node dist/App.js",
+    "postinstall": "cd src/scripts && npm install"
   },
   "repository": {
     "type": "git",
@@ -25,8 +26,10 @@
     "pug": "^3.0.2"
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
-    "eslint-plugin-import": "^2.24.0"
+    "eslint-plugin-import": "^2.24.0",
+    "uuid": "^8.3.2"
   }
 }
