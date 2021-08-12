@@ -1,5 +1,3 @@
-namespace Win98 {
-    export interface Action {
-        run(): void;
-    }
+export default interface Action {
+  run(): void;
 }

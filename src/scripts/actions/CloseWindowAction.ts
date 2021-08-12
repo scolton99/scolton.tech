@@ -1,13 +1,15 @@
-namespace Win98 {
-    export class CloseWindowAction implements Action {
-        private readonly window: Window;
+import Action from './Action.js';
+import ServiceManager from '../service/ServiceManager.js';
+import Window from '../ui/windows/api/Window.js';
 
-        public constructor(window: Window) {
-            this.window = window;
-        }
+export default class CloseWindowAction implements Action {
+  private readonly window: Window;
 
-        public run(): void {
-            ServiceManager.getWindows().getWindowManager().close(this.window);
-        }
-    }
+  public constructor(window: Window) {
+    this.window = window;
+  }
+
+  public run(): void {
+    ServiceManager.getWindows().getWindowManager().close(this.window);
+  }
 }

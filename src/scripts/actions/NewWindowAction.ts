@@ -1,13 +1,15 @@
-namespace Win98 {
-    export class NewWindowAction implements Action {
-        private readonly type: new () => Window;
+import ServiceManager from '../service/ServiceManager.js';
+import Action from './Action.js';
+import Window from '../ui/windows/api/Window.js';
 
-        constructor(window: new () => Window) {
-            this.type = window;
-        }
+export default class NewWindowAction implements Action {
+  private readonly type: new () => Window;
 
-        run(): void {
-            ServiceManager.getWindows().getWindowManager().open(new this.type);
-        }
-    }
+  public constructor(window: new () => Window) {
+    this.type = window;
+  }
+
+  public run(): void {
+    ServiceManager.getWindows().getWindowManager().open(new this.type);
+  }
 }

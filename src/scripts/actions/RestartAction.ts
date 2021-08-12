@@ -1,7 +1,7 @@
-namespace Win98 {
-    export class RestartAction implements Action {
-        public run(): void {
-            location.reload();
-        }
-    }
+import Action from './Action.js';
+
+export default class RestartAction implements Action {
+  public run(): void {
+    location.reload();
+  }
 }

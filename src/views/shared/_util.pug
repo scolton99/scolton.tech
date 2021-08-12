@@ -2,4 +2,4 @@ mixin style(name)
     link(rel='stylesheet' href=`/static/assets/stylesheets/${name}.css`)
 
 mixin script(name)
-    script(src=`/static/assets/scripts/${name}.js`)
+    script(type='module' src=`/static/assets/scripts/${name}.js`)

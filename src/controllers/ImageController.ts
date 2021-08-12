@@ -1,11 +1,16 @@
 import * as path from "path";
 import * as fs from "fs";
-import ImageEntry = Win98.ImageEntry;
+import { Request, Response } from 'express';
+
+interface ImageEntry {
+    name: string,
+    category: string
+}
 
 export default class ImageController {
-    private static IMAGE_PATH: string = path.resolve(process.cwd(), "public/assets/images");
+    private static readonly IMAGE_PATH: string = path.resolve(process.cwd(), "public/assets/images");
 
-    public all(_req, res) {
+    public all(req: Request, res: Response): void {
         const imgs: Array<ImageEntry> = [];
         const categories = fs.readdirSync(ImageController.IMAGE_PATH, { withFileTypes: true }).filter(it => it.isDirectory());
 

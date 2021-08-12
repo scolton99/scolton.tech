@@ -1,9 +1,7 @@
-/// <reference path="./util/ServiceManager.ts" />
+import ServiceManager from './service/ServiceManager.js';
 
-namespace Win98 {
-    const main = async () => {
-        await ServiceManager.initialize();
-    };
+const main = async () => {
+  await ServiceManager.initialize();
+};
 
-    main().then();
-}
+void main();

@@ -1,13 +1,13 @@
-namespace Win98 {
-    export class CompoundAction implements Action {
-        private readonly actions: Array<Action>;
+import Action from './Action.js';
 
-        public constructor(...actions: Array<Action>) {
-            this.actions = actions;
-        }
+export default class CompoundAction implements Action {
+  private readonly actions: Array<Action>;
 
-        public run(): void {
-            this.actions.forEach(action => action.run());
-        }
-    }
+  public constructor(...actions: Array<Action>) {
+    this.actions = actions;
+  }
+
+  public run(): void {
+    this.actions.forEach(action => action.run());
+  }
 }

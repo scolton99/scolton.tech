@@ -1,10 +1,8 @@
-/// <reference path="../util/ServiceManager.ts" />
-/// <reference path="./Action.ts" />
+import Action from './Action.js';
+import ServiceManager from '../service/ServiceManager.js';
 
-namespace Win98 {
-    export class ShutdownAction implements Action {
-        run(): void {
-            ServiceManager.getWindows().shutdown();
-        }
-    }
+export default class ShutdownAction implements Action {
+  public run(): void {
+    ServiceManager.getWindows().shutdown();
+  }
 }
