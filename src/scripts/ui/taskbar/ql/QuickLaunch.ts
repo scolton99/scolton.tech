@@ -45,7 +45,7 @@ export default class QuickLaunch extends ViewComponent {
 
     private getItems(): Array<QuickLaunchItem> {
         if (!this.items) {
-            const itemPrototypes: Array<QuickLaunchItemPrototype> = ServiceManager.getSession().getObject("quick-launch-items", [
+            const itemPrototypes: Array<QuickLaunchItemPrototype> = ServiceManager.getSession().get("quick-launch-items", [
                 {
                     name: "show-desktop"
                 },
