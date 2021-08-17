@@ -27,10 +27,15 @@ export default class Windows {
   }
 
   public async start(): Promise<Windows> {
-    Windows.showBootSplash();
-    await Async.waitAtLeast(Windows.bootDelay, this.boot());
-    Windows.hideBootSplash();
-    return new Windows();
+    try {
+      Windows.showBootSplash();
+      await Async.waitAtLeast(Windows.bootDelay, this.boot());
+      Windows.hideBootSplash();
+      return new Windows();
+    } catch (e) {
+      Windows.BSOD(e);
+      throw e;
+    }
   }
 
   private static showBootSplash() {
@@ -42,6 +47,31 @@ export default class Windows {
 
   private static hideBootSplash() {
     document.body.removeChild(document.querySelector('body > .boot-splash'));
+  }
+
+  private static BSOD(e: Error): void {
+    const BSOD = document.createElement("div");
+    BSOD.classList.add("BSOD");
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+
+    const title = document.createElement("span");
+    title.classList.add("title");
+    title.textContent = "Windows";
+
+    const body = document.createElement("div");
+    body.classList.add("body");
+    body.textContent = `A fatal exception ${e.message} has occurred.`;
+
+    const details = document.createElement("div");
+    details.classList.add("details");
+    details.innerHTML = e.stack.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+
+    container.append(title, body, details);
+    BSOD.append(container);
+
+    document.body.append(BSOD);
   }
 
   public wakeup(): void {

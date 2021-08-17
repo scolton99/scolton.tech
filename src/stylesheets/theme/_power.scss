@@ -27,3 +27,48 @@
   background-size: 100% 100%;
   z-index: 100000;
 }
+
+.BSOD {
+  z-index: 1000000;
+  position: fixed;
+  inset: 0 0 0 0;
+  background-color: #00F;
+  color: #FFF;
+  font-family: 'Lucida Console', 'Consolas', monospace;
+  font-weight: bold;
+
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  .title, .body {
+    margin-bottom: 1em;
+  }
+
+  .body {
+    text-align: left;
+    width: 100%;
+  }
+
+  .container {
+    width: auto;
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title {
+    background-color: #9F9F9F;
+    color: #00F;
+    padding: 0 10px;
+  }
+
+  .details {
+    width: 100%;
+    text-align: left;
+  }
+}
