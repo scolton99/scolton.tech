@@ -97,4 +97,12 @@ export default class ShutdownWindow extends ShadeWindow {
   public draggable(): boolean {
     return false;
   }
+
+  public static getWindowClassName(): string {
+    return "shut-down";
+  }
+
+  public static getDefaultIconName(): string {
+    return null;
+  }
 }

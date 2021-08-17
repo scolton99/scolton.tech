@@ -26,10 +26,7 @@
   }
 
   @import "taskbar/start_button";
-
-  #quick-launch {
-
-  }
+  @import "taskbar/quick_launch";
 
   #open-windows {
     flex-grow: 1;

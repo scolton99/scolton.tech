@@ -7,8 +7,9 @@ export default class ServiceManager {
   private static sessionInstance: SessionService;
 
   public static async initialize(): Promise<void> {
-    ServiceManager.windowsInstance = await Windows.start();
     ServiceManager.sessionInstance = new SessionService();
+    ServiceManager.windowsInstance = new Windows();
+    await ServiceManager.windowsInstance.start();
   }
 
   public static getWindows(): Windows {

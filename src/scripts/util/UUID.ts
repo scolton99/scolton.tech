@@ -1,4 +1,4 @@
-declare const UUIDV4: () => string;
+declare const UUID_V4: () => string;
 
 export default abstract class UUID {
   /**
@@ -6,6 +6,6 @@ export default abstract class UUID {
    * Taken from https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
    */
   public static generate(): string {
-    return UUIDV4();
+    return UUID_V4();
   }
 }

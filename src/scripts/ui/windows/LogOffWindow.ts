@@ -23,4 +23,12 @@ export default class LogOffWindow extends ShadeWindow {
   public getIconName(): string {
     return null;
   }
+
+  public static getWindowClassName(): string {
+    return "log-off";
+  }
+
+  public static getDefaultIconName(): string {
+    return null;
+  }
 }

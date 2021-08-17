@@ -447,4 +447,27 @@ export default abstract class Window implements HTMLCompatible {
   protected taskbarHeight(): number {
     return ServiceManager.getWindows().getTaskbar().height;
   }
+
+  private hide(): void {
+    this.getSurroundingWindowElement().style.display = "none";
+  }
+  private show(): void {
+    this.getSurroundingWindowElement().style.display = "unset";
+  }
+
+  public minimize(): void {
+    this.hide();
+  }
+
+  public maximize(): void {
+    this.show();
+
+    this.windowElement.classList.add("maximized");
+
+    this.setPosition(new FixedPosition(0, 0, this.taskbarHeight(), 0));
+  }
+
+  public isMaximized(): boolean {
+    return this.windowElement.classList.contains("maximized");
+  }
 }

@@ -1,4 +1,4 @@
-import DOMComponent from '../api/DOMComponent.js';
+import ViewComponent from '../api/ViewComponent.js';
 import StartButton from './StartButton.js';
 import MenuEntry from './MenuEntry.js';
 import NewWindowAction from '../../actions/NewWindowAction.js';
@@ -6,7 +6,7 @@ import LogOffWindow from '../windows/LogOffWindow.js';
 import ShutdownWindow from '../windows/ShutdownWindow.js';
 import Resources from '../util/Resources.js';
 
-export default class StartMenu extends DOMComponent {
+export default class StartMenu extends ViewComponent {
   private readonly animationTime: number = 125;
   private readonly startButton: StartButton;
 

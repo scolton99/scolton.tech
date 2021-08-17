@@ -1,11 +1,11 @@
 import ServiceManager from '../service/ServiceManager.js';
 import Action from './Action.js';
-import Window from '../ui/windows/api/Window.js';
+import {WindowCreator} from '../system/WindowManager.js';
 
 export default class NewWindowAction implements Action {
-  private readonly type: new () => Window;
+  private readonly type: WindowCreator;
 
-  public constructor(window: new () => Window) {
+  public constructor(window: WindowCreator) {
     this.type = window;
   }
 

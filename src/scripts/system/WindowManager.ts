@@ -1,8 +1,20 @@
 import Window from '../ui/windows/api/Window.js';
+import ShutdownWindow from '../ui/windows/ShutdownWindow.js';
+import LogOffWindow from '../ui/windows/LogOffWindow.js';
+import InternetExplorerWindow from '../ui/windows/InternetExplorerWindow.js';
 
 export interface WindowSize {
   height: number,
   width: number
+}
+
+export interface WindowCreator {
+  new (): Window;
+}
+
+export interface WindowRegistration extends WindowCreator {
+  getWindowClassName(): string;
+  getDefaultIconName(): string;
 }
 
 export default class WindowManager {
@@ -15,8 +27,17 @@ export default class WindowManager {
   private readonly openWindows: Array<Window> = [];
   private readonly callbacks: Array<{ (): void }> = [];
 
+  private readonly registry = new Map<string, WindowRegistration>();
+  private readonly types: Array<WindowRegistration> = [
+      ShutdownWindow,
+      LogOffWindow,
+      InternetExplorerWindow
+  ];
+
   public constructor() {
     this.el = document.getElementById(WindowManager.WINDOWS_CONTAINER_ID);
+
+    this.registerDefaults();
 
     this.lastWindowSize = {
       height: window.innerHeight,
@@ -29,7 +50,12 @@ export default class WindowManager {
       throw new Error(`Couldn't find element #${WindowManager.WINDOWS_CONTAINER_ID} to hold open windows`);
   }
 
-  public register(cb: (() => void)): void {
+  private registerDefaults(): void {
+    for (const type of this.types)
+      this.registry.set(type.getWindowClassName(), type);
+  }
+
+  public registerCallback(cb: (() => void)): void {
     this.callbacks.push(cb);
   }
 
@@ -97,5 +123,19 @@ export default class WindowManager {
   public resizeDesktop(): void {
     this.openWindows.forEach(it => it.resizeDesktop(this.lastWindowSize));
     this.lastWindowSize = { width: window.innerWidth, height: window.innerHeight };
+  }
+
+  public showDesktop(): void {
+    this.openWindows.forEach(window => {
+      window.minimize();
+    });
+  }
+
+  public registerWindow(windowClass: WindowRegistration): void {
+    this.registry.set(windowClass.getWindowClassName(), windowClass);
+  }
+
+  public getByName(name: string): WindowRegistration {
+    return this.registry.get(name);
   }
 }

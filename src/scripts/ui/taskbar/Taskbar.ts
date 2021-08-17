@@ -1,10 +1,12 @@
-import DOMComponent from '../api/DOMComponent.js';
+import ViewComponent from '../api/ViewComponent.js';
 import Window from '../windows/api/Window.js';
 import StartButton from './StartButton.js';
 import WindowManager from '../../system/WindowManager.js';
+import QuickLaunch from './ql/QuickLaunch.js';
 
-export default class Taskbar extends DOMComponent {
+export default class Taskbar extends ViewComponent {
   private readonly startButton: StartButton;
+  private readonly quickLaunch: QuickLaunch;
   private readonly openWindows: Array<Window>                  = [];
   private readonly windowDOMElements: Map<Window, HTMLElement> = new Map<Window, HTMLElement>();
 
@@ -12,8 +14,9 @@ export default class Taskbar extends DOMComponent {
     super();
 
     this.startButton = new StartButton();
+    this.quickLaunch = new QuickLaunch();
 
-    windowManager.register(this.openWindowsChange.bind(this));
+    windowManager.registerCallback(this.openWindowsChange.bind(this));
   }
 
   public getId(): string {

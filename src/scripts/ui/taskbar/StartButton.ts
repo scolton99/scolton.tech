@@ -1,7 +1,7 @@
-import DOMComponent from '../api/DOMComponent.js';
+import ViewComponent from '../api/ViewComponent.js';
 import StartMenu from './StartMenu.js';
 
-export default class StartButton extends DOMComponent {
+export default class StartButton extends ViewComponent {
   private readonly menu: StartMenu;
 
   public constructor() {

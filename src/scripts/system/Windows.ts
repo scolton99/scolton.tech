@@ -4,12 +4,12 @@ import ImagePreloader from '../ui/util/ImagePreloader.js';
 import Async from '../util/Async.js';
 
 export default class Windows {
-  private readonly taskbar: Taskbar;
+  private taskbar: Taskbar;
   private readonly windowManager: WindowManager;
   private static readonly bootDelay: number = 3000;
   private static readonly standbyDelay: number = 2000;
 
-  private constructor() {
+  public constructor() {
     const deny: { (arg0: Event): boolean } = event => {
       event.preventDefault();
       return false;
@@ -19,16 +19,16 @@ export default class Windows {
     window.addEventListener('contextmenu', deny);
 
     this.windowManager = new WindowManager();
-    this.taskbar       = new Taskbar(this.windowManager);
   }
 
-  public static async boot(): Promise<void> {
+  public async boot(): Promise<void> {
     await ImagePreloader.all();
+    this.taskbar = new Taskbar(this.windowManager);
   }
 
-  public static async start(): Promise<Windows> {
+  public async start(): Promise<Windows> {
     Windows.showBootSplash();
-    await Async.waitAtLeast(Windows.bootDelay, Windows.boot());
+    await Async.waitAtLeast(Windows.bootDelay, this.boot());
     Windows.hideBootSplash();
     return new Windows();
   }

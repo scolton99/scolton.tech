@@ -1,4 +1,4 @@
-export default abstract class DOMComponent {
+export default abstract class ViewComponent {
   protected el: HTMLElement;
 
   protected constructor() {
