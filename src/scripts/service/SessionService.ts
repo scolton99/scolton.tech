@@ -21,7 +21,7 @@ export default class SessionService {
 
   public get(key: string, def: JSONValue): JSONValue {
     const storedValue = this.getRootObject()[key];
-    return storedValue === null ? def : storedValue;
+    return (typeof(storedValue) === 'undefined' || storedValue === null) ? def : storedValue;
   }
 
   private static getStorage(): Storage {

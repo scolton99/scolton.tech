@@ -47,6 +47,15 @@ export default class Taskbar extends ViewComponent {
     return this.el.querySelector('#taskbar-open-windows');
   }
 
+  private static renderTaskbarEntry(window: Window): HTMLElement {
+    const windowEntry       = document.createElement('span');
+    windowEntry.textContent = window.getTitle();
+
+    windowEntry.addEventListener('click', window.toggleMinimized.bind(window));
+
+    return windowEntry;
+  }
+
   private renderOpenWindows() {
     const el = this.openWindowsEl();
 
@@ -55,9 +64,7 @@ export default class Taskbar extends ViewComponent {
 
     for (const window of this.openWindows) {
       if (!this.windowDOMElements.has(window)) {
-        const windowEntry       = document.createElement('span');
-        windowEntry.textContent = window.getTitle();
-        this.windowDOMElements.set(window, windowEntry);
+        this.windowDOMElements.set(window, Taskbar.renderTaskbarEntry(window));
       }
 
       const windowEl = this.windowDOMElements.get(window);

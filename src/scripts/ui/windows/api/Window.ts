@@ -137,21 +137,30 @@ export default abstract class Window implements HTMLCompatible {
    *
    * @param event - The `MouseEvent` resulting from the initial mouse down.
    */
-  public drag(event: MouseEvent): void {
+  protected drag(event: MouseEvent): void {
     const origMousePos: MouseCoords    = new MouseCoords(event.x, event.y);
     const origWindowPos: FixedPosition = this.getPosition();
 
-    const handleMove: (MouseEvent) => void = (event: MouseEvent) => {
-      const delta: { deltaX, deltaY } = origMousePos.calculateDelta(new MouseCoords(event.x, event.y));
-      this.shiftRelative(delta.deltaX, delta.deltaY, origWindowPos);
-    };
-    window.addEventListener('mousemove', handleMove);
+    const moveListener = this.handleMove.bind(this, origMousePos, origWindowPos) as (evt: MouseEvent) => void;
+
+    window.addEventListener('mousemove', moveListener);
 
     const removeListeners: (MouseEvent) => void = () => {
-      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mousemove', moveListener);
       window.removeEventListener('mouseup', removeListeners);
+      this.dragEnd();
     };
     window.addEventListener('mouseup', removeListeners);
+  }
+
+  protected handleMove(origMousePos: MouseCoords, origWindowPos: FixedPosition, event: MouseEvent): void {
+    const delta: { deltaX, deltaY } = origMousePos.calculateDelta(new MouseCoords(event.x, event.y));
+    this.shiftRelative(delta.deltaX, delta.deltaY, origWindowPos);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected dragEnd(): void {
+
   }
 
   public getTitle(): string {
@@ -459,6 +468,17 @@ export default abstract class Window implements HTMLCompatible {
     this.hide();
   }
 
+  public unminimize(): void {
+    this.show();
+  }
+
+  public toggleMinimized(): void {
+    if (this.isMinimized())
+      this.unminimize();
+    else
+      this.minimize();
+  }
+
   public maximize(): void {
     this.show();
 
@@ -469,5 +489,9 @@ export default abstract class Window implements HTMLCompatible {
 
   public isMaximized(): boolean {
     return this.windowElement.classList.contains("maximized");
+  }
+
+  public isMinimized(): boolean {
+    return this.getSurroundingWindowElement().style.display === 'none';
   }
 }

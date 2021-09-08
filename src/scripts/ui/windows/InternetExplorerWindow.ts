@@ -19,6 +19,29 @@ export default class InternetExplorerWindow extends Window {
         });
     }
 
+    private frame(): HTMLIFrameElement {
+        return this.contentElement as HTMLIFrameElement;
+    }
+
+    /**
+     *
+     * @override
+     * @param event
+     * @protected
+     */
+    protected drag(event: MouseEvent): void {
+        const frame = this.frame();
+
+        frame.style.pointerEvents = "none";
+
+        super.drag(event);
+    }
+
+    protected dragEnd(): void {
+        const frame = this.frame();
+        frame.style.pointerEvents = "unset";
+    }
+
     public getIconName(): string {
         return "internet-explorer";
     }
