@@ -24,6 +24,9 @@ export default class Windows {
   public async boot(): Promise<void> {
     await ImagePreloader.all();
     this.taskbar = new Taskbar(this.windowManager);
+    window.addEventListener('error', e => {
+      Windows.BSOD(e.error);
+    });
   }
 
   public async start(): Promise<Windows> {

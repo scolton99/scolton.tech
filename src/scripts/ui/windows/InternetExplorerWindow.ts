@@ -17,6 +17,8 @@ export default class InternetExplorerWindow extends Window {
                 this.rootElement = document.createElement("iframe");
             }
         });
+
+        throw new Error('IE bork');
     }
 
     private frame(): HTMLIFrameElement {
